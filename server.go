@@ -18,10 +18,20 @@ func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	duration := time.Duration(time.Second * 3)
 	log.Println("duration:", duration.Seconds())
-	conn.SetReadDeadline(time.Now().Add(duration))
 	var b [1000]byte
-	n, err := conn.Read(b[:])
-	log.Println("处理请求:", conn, n, err, b[:n])
+	var cnt int = 0
+	for {
+		conn.SetReadDeadline(time.Now().Add(duration))
+		n, err := conn.Read(b[cnt:])
+		log.Println("处理请求:", conn, n, err, cnt)
+		cnt += n
+
+		if err != nil || cnt >= 30 {
+			break
+		}
+	}
+
+	log.Println("读取", b[:cnt])
 }
 
 func parseConf() {
