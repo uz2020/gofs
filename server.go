@@ -7,13 +7,21 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"time"
 )
 
 var port *int = flag.Int("p", 8080, "监听端口")
 var conf *string = flag.String("c", "gofs.conf", "配置文件")
+var daemon *int = flag.Int("d", 0, "后台运行")
 
 func handleConnection(conn net.Conn) {
-	log.Println("处理请求:", conn)
+	defer conn.Close()
+	duration := time.Duration(time.Second * 3)
+	log.Println("duration:", duration.Seconds())
+	conn.SetReadDeadline(time.Now().Add(duration))
+	var b [1000]byte
+	n, err := conn.Read(b[:])
+	log.Println("处理请求:", conn, n, err, b[:n])
 }
 
 func parseConf() {
