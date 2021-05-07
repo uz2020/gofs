@@ -16,3 +16,9 @@
 test/
 
 gofs
+
+GPATH
+GRTAGS
+GTAGS
+logs/
+*.bk
